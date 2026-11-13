@@ -67,8 +67,11 @@ jobs:
       - name: API returns JSON
         run: curl -fsS "http://127.0.0.1:8080/index.php?p=api&list=1" | python3 -c "import sys,json; d=json.load(sys.stdin); assert isinstance(d,list) and len(d)>0; print('apps:', len(d))"
 
-      - name: Admin login page renders
-        run: curl -fsS http://127.0.0.1:8080/admin.php | grep -q '速键库'
+      - name: Admin is hidden from direct access (expects 404)
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8080/admin.php)
+          echo "admin.php -> HTTP $code"
+          [ "$code" = "404" ]
 
       - name: Print server log on failure
         if: failure()
