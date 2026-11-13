@@ -54,6 +54,19 @@ php -S localhost:8080
    ```
 5. 后台入口 `admin.php`，默认账号 `admin / admin123456`，**登录后请立即修改密码**。
 
+### 自动部署（可选）
+
+仓库内置 `.github/workflows/deploy.yml`：推送 `main` 后自动把站点同步到主机。在仓库 `Settings → Secrets and variables → Actions` 添加四个变量即可启用：
+
+| 变量 | 示例 |
+|---|---|
+| `FTP_SERVER` | `sg02.my-plaec.us` |
+| `FTP_USERNAME` | `mp_43041338` |
+| `FTP_PASSWORD` | 面板/FTP 密码 |
+| `FTP_SERVER_DIR` | `/htdocs/` |
+
+安全设计：只监听 `main` push（PR 不触发、fork 拿不到 secrets）；`lftp mirror -R` **只上传不删除**，线上多余文件不会被清掉；`data/` 下的配置与统计、`assets/qr/` 里的二维码被排除，**本地永远不会覆盖线上数据**。未配置变量时该任务自动跳过（不会报红）。
+
 ## 管理后台
 
 | 功能 | 说明 |

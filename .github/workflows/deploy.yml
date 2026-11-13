@@ -1,0 +1,102 @@
+name: Deploy
+
+# 只有推送 main 才会部署（PR、fork 都不会触发；来自 fork 的 PR 也拿不到 secrets）
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to hosting (FTP)
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        id: cfg
+        run: |
+          if [ -z "${{ secrets.FTP_SERVER }}" ] || [ -z "${{ secrets.FTP_USERNAME }}" ] || [ -z "${{ secrets.FTP_PASSWORD }}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::未配置 FTP 部署变量，本次跳过部署（配置方法见 README）"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build dist
+        if: steps.cfg.outputs.skip == 'false'
+        run: |
+          set -e
+          mkdir -p dist
+          cp -r site/. dist/
+          # 站点根文件
+          cp 清单.json dist/softwares.json
+          cp 待补充清单.json dist/pending.json
+          cp favicon.ico dist/favicon.ico
+          cp .htaccess dist/.htaccess
+          # 只带 data 的访问保护规则，绝不上传运行数据
+          rm -rf dist/data dist/assets/qr/*.png dist/assets/qr/*.jpg dist/assets/qr/*.webp
+          mkdir -p dist/data dist/assets/qr
+          cp site/data/.htaccess dist/data/.htaccess
+          touch dist/assets/qr/.gitkeep
+          echo "---- dist ----"
+          find dist -maxdepth 2 -type f | sort
+
+      - name: Install lftp
+        if: steps.cfg.outputs.skip == 'false'
+        run: sudo apt-get update -qq && sudo apt-get install -y lftp
+
+      - name: Upload (no delete, protect data & qr)
+        if: steps.cfg.outputs.skip == 'false'
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_SERVER_DIR: ${{ secrets.FTP_SERVER_DIR }}
+        run: |
+          set -e
+          TARGET="${FTP_SERVER_DIR:-/htdocs/}"
+          lftp -c "
+            set ftp:ssl-allow no;
+            set ftp:passive-mode true;
+            set net:timeout 20;
+            set net:max-retries 3;
+            set mirror:parallel-transfer-count 4;
+            open -u '$FTP_USERNAME','$FTP_PASSWORD' $FTP_SERVER;
+            lcd dist;
+            mirror -R --verbose=1 \
+              --exclude-glob data/*.json \
+              --exclude-glob data/admin_config.php \
+              --exclude-glob data/backups/ \
+              --exclude-glob data/backups/* \
+              --exclude-glob assets/qr/*.png \
+              --exclude-glob assets/qr/*.jpg \
+              --exclude-glob assets/qr/*.webp \
+              ./ $TARGET;
+            bye
+          "
+
+      - name: Verify live site
+        if: steps.cfg.outputs.skip == 'false'
+        run: |
+          set -e
+          for i in $(seq 1 10); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "https://xcsy.my-place.us/index.php" || true)
+            echo "attempt $i -> HTTP $code"
+            [ "$code" = "200" ] && break
+            sleep 3
+          done
+          html=$(curl -fsS --max-time 20 "https://xcsy.my-place.us/index.php" || true)
+          if echo "$html" | grep -q '速键库'; then
+            echo "::notice::部署成功，线上首页正常"
+          else
+            echo "::warning::部署已执行，但首页校验未通过，请手动确认"
+          fi

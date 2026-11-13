@@ -52,6 +52,19 @@ Open `http://localhost:8080`.
    ```
 5. Admin panel is at `admin.php`, default credentials `admin / admin123456` — **change the password immediately**.
 
+### Automatic deployment (optional)
+
+`.github/workflows/deploy.yml` syncs the site to your host on every push to `main`. Add four variables in `Settings → Secrets and variables → Actions`:
+
+| Secret | Example |
+|---|---|
+| `FTP_SERVER` | `sg02.my-plaec.us` |
+| `FTP_USERNAME` | `mp_43041338` |
+| `FTP_PASSWORD` | your panel/FTP password |
+| `FTP_SERVER_DIR` | `/htdocs/` |
+
+Safety: triggers on `main` pushes only (no PR triggers, forks never receive secrets); `lftp mirror -R` **uploads without deleting**; `data/` and `assets/qr/` are excluded so local runs never overwrite live data. If the secrets are missing the job skips itself instead of failing.
+
 ## Admin Panel
 
 | Module | Description |
