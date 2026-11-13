@@ -58,10 +58,10 @@ Open `http://localhost:8080`.
 
 | Secret | Example |
 |---|---|
-| `FTP_SERVER` | `sg02.my-plaec.us` |
-| `FTP_USERNAME` | `mp_43041338` |
-| `FTP_PASSWORD` | your panel/FTP password |
-| `FTP_SERVER_DIR` | `/htdocs/` |
+| `FTP_SERVER` | `ftpupload.net` (VistaPanel → "FTP Hostname") |
+| `FTP_USERNAME` | `mp_43041338` (FTP account, not email) |
+| `FTP_PASSWORD` | FTP password |
+| `FTP_SERVER_DIR` | `/htdocs/` (site root after login) |
 
 Safety: triggers on `main` pushes only (no PR triggers, forks never receive secrets); `lftp mirror -R` **uploads without deleting**; `data/` and `assets/qr/` are excluded so local runs never overwrite live data. If the secrets are missing the job skips itself instead of failing.
 

@@ -60,10 +60,10 @@ php -S localhost:8080
 
 | 变量 | 示例 |
 |---|---|
-| `FTP_SERVER` | `sg02.my-plaec.us` |
-| `FTP_USERNAME` | `mp_43041338` |
-| `FTP_PASSWORD` | 面板/FTP 密码 |
-| `FTP_SERVER_DIR` | `/htdocs/` |
+| `FTP_SERVER` | `ftpupload.net`（VistaPanel 右栏「FTP主机名」） |
+| `FTP_USERNAME` | `mp_43041338`（FTP账号，不是邮箱） |
+| `FTP_PASSWORD` | FTP 密码（不是主域名） |
+| `FTP_SERVER_DIR` | `/htdocs/`（登录后的站点根目录，若是 `/` 开头的目录请按主机实际调整） |
 
 安全设计：只监听 `main` push（PR 不触发、fork 拿不到 secrets）；`lftp mirror -R` **只上传不删除**，线上多余文件不会被清掉；`data/` 下的配置与统计、`assets/qr/` 里的二维码被排除，**本地永远不会覆盖线上数据**。未配置变量时该任务自动跳过（不会报红）。
 
