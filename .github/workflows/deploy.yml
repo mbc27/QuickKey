@@ -1,9 +1,8 @@
 name: Deploy
 
-# 只有推送 main 才会部署（PR、fork 都不会触发；来自 fork 的 PR 也拿不到 secrets）
+# 仅手动触发：Actions 页面 → Deploy → Run workflow
+# （FTP 密码问题解决后如需 push 自动部署，把 push 触发加回来即可）
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
