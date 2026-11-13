@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  php-lint:
+    name: PHP ${{ matrix.php }} syntax check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, json
+          coverage: none
+
+      - name: Lint all PHP files
+        run: find . -name '*.php' -not -path './.git/*' -print0 | xargs -0 -n 1 php -l
+
+  json-check:
+    name: Validate JSON data files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON syntax
+        run: |
+          for f in 清单.json 待补充清单.json site/data/site_config.example.json; do
+            python3 -m json.tool "$f" > /dev/null && echo "OK  $f"
+          done
+
+  smoke-test:
+    name: Smoke test (PHP 8.2 + built-in server)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, json
+          coverage: none
+
+      - name: Start built-in server
+        run: |
+          php -S 127.0.0.1:8080 -t site > server.log 2>&1 &
+          for i in $(seq 1 20); do
+            curl -fsS -o /dev/null http://127.0.0.1:8080/index.php && break || sleep 0.5
+          done
+
+      - name: Front page renders
+        run: curl -fsS http://127.0.0.1:8080/index.php | grep -q '速键库'
+
+      - name: Search page renders
+        run: curl -fsS "http://127.0.0.1:8080/index.php?p=search&q=PS" | grep -q '速键库'
+
+      - name: API returns JSON
+        run: curl -fsS "http://127.0.0.1:8080/index.php?p=api&list=1" | python3 -c "import sys,json; d=json.load(sys.stdin); assert isinstance(d,list) and len(d)>0; print('apps:', len(d))"
+
+      - name: Admin login page renders
+        run: curl -fsS http://127.0.0.1:8080/admin.php | grep -q '速键库'
+
+      - name: Print server log on failure
+        if: failure()
+        run: cat server.log
