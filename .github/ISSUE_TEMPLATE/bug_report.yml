@@ -1,0 +1,53 @@
+name: Bug 反馈
+description: 页面打不开、样式错乱、功能异常、报错等问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！如果是**快捷键内容有误或缺失**，请用「快捷键纠错」模板，处理更快。
+
+  - type: input
+    id: url
+    attributes:
+      label: 出问题的页面地址
+      description: 例如 https://xcsy.my-place.us/index.php?p=software&s=Photoshop
+      placeholder: https://...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 你点了什么、输入了什么，问题在哪一步出现
+      placeholder: |
+        1. 打开首页
+        2. 搜索 "图层"
+        3. 点击结果卡片 → 页面空白
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      description: 有报错信息或截图请贴在这里（截图可直接拖进输入框）
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: 浏览器 / 系统
+      placeholder: Chrome 131 / Windows 11、Safari / iPhone 15
+    validations:
+      required: false

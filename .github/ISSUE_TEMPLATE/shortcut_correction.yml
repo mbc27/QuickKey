@@ -1,0 +1,58 @@
+name: 快捷键纠错 / 补充
+description: 快捷键写错了、缺功能、缺软件、版本对不上
+title: "[纠错] "
+labels: ["shortcut-data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提交前请先确认网站里是否已有该软件（首页搜索软件名）。
+
+  - type: input
+    id: app
+    attributes:
+      label: 软件名称
+      placeholder: Photoshop / AutoCAD / VS Code
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 平台 / 版本
+      description: 快捷键在不同平台、版本下可能不同，请写清楚
+      placeholder: Windows 2024 / macOS 14 / 通用
+    validations:
+      required: true
+
+  - type: input
+    id: wrong
+    attributes:
+      label: 网站上显示的内容（如有错误）
+      placeholder: Ctrl+Shift+S — 另存为
+    validations:
+      required: false
+
+  - type: input
+    id: correct
+    attributes:
+      label: 正确内容 / 需要补充的内容
+      placeholder: Ctrl+Alt+S — 另存为副本
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: 参考来源（官方文档 / 软件内帮助）
+      description: 有来源的纠错优先采纳
+      placeholder: https://helpx.adobe.com/...
+    validations:
+      required: false
+
+  - type: textarea
+    id: note
+    attributes:
+      label: 补充说明
+    validations:
+      required: false

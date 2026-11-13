@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 站内提交纠错 / 投稿
+    url: https://xcsy.my-place.us/index.php?p=feedback
+    about: 快捷键错误或补充，用站内表单提交（后台会收到并显示未读数）
+  - name: 使用问题 / 讨论
+    url: https://github.com/mbc27/QuickKey/discussions
+    about: 部署、二次开发、功能建议

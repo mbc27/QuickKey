@@ -116,6 +116,14 @@ You can edit everything visually in the admin panel, or batch-edit the JSON dire
 - Rate limiting: public API 30 req/min, submissions 5 per 10 min, visitor-log anti-abuse 15 req/min;
 - This repository contains **no real runtime data** — QR codes, visitor IPs, submissions and password hashes are all excluded via `.gitignore`.
 
+## Contributing
+
+Found a wrong shortcut, missing software, or want to improve the code? Contributions are welcome:
+
+- **No coding needed**: use the in-site [feedback form](https://xcsy.my-place.us/index.php?p=feedback) or open a [shortcut correction issue](https://github.com/mbc27/QuickKey/issues/new?template=shortcut_correction.yml);
+- **Developers**: see [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, pre-commit checks, code conventions and the data format;
+- Bugs: please use the [bug report template](https://github.com/mbc27/QuickKey/issues/new?template=bug_report.yml).
+
 ## CI
 
 GitHub Actions runs on every push/PR:

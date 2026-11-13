@@ -118,6 +118,14 @@ php -S localhost:8080
 - 未登录接口限流（30 次/分钟）、投稿限流（5 条/10 分钟）、访客日志防刷（15 次/分钟）；
 - 本仓库不包含任何真实运行数据（二维码、访客 IP、投稿内容、密码哈希均已排除）。
 
+## 参与贡献
+
+发现快捷键有误、想补充新软件，或者想改代码，都欢迎：
+
+- **不懂代码**：用站内[投稿表单](https://xcsy.my-place.us/index.php?p=feedback)，或提一个 [快捷键纠错 Issue](https://github.com/mbc27/QuickKey/issues/new?template=shortcut_correction.yml)；
+- **懂代码**：详见 [CONTRIBUTING.md](CONTRIBUTING.md)（本地环境、提交前自检、代码约定、数据格式）；
+- 遇到 Bug 请用 [Bug 反馈模板](https://github.com/mbc27/QuickKey/issues/new?template=bug_report.yml)。
+
 ## CI
 
 每次 push / PR 自动运行 GitHub Actions：
