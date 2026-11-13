@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.php
+Disallow: /data/
+Disallow: /index.php?p=api
+
+# 上线后替换为正式域名
+Sitemap: https://www.example.com/sitemap.php

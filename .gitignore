@@ -1,0 +1,16 @@
+# ---- 运行/隐私数据：部署后由程序自动生成，切勿提交 ----
+site/data/*.json
+!site/data/site_config.example.json
+site/data/admin_config.php
+site/data/backups/
+site/assets/qr/*
+!site/assets/qr/.gitkeep
+
+# ---- 本地/构建产物 ----
+deploy/
+*.zip
+
+# ---- 系统文件 ----
+Thumbs.db
+.DS_Store
+node_modules/
